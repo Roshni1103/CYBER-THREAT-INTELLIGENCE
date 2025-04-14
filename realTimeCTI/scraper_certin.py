@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from database import insert_threat_data, create_tables
+from database import insert_threat_data, setup_database
+
 from datetime import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
 

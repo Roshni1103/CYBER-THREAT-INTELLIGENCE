@@ -17,7 +17,6 @@ def setup_database():
     conn.commit()
     conn.close()
 
-
 def insert_threat_data(source, title, url, description=""):
     conn = sqlite3.connect('threat_data.db')
     c = conn.cursor()
@@ -32,7 +31,6 @@ def insert_threat_data(source, title, url, description=""):
     finally:
         conn.close()
 
-
 def fetch_all_threats():
     conn = sqlite3.connect('threat_data.db')
     c = conn.cursor()
@@ -40,3 +38,7 @@ def fetch_all_threats():
     data = c.fetchall()
     conn.close()
     return data
+
+# ✅ This will run only if the script is executed directly
+if __name__ == '__main__':
+    setup_database()

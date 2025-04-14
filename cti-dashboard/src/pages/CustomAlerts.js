@@ -6,7 +6,8 @@ const CustomAlerts = () => {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/api/alerts')
+    axios.get('http://127.0.0.1:10000/api/alerts')
+
       .then(response => {
         setAlerts(response.data);
       })

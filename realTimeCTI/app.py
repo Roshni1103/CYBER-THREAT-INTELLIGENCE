@@ -5,7 +5,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React to connect
 
-DATABASE = 'cyber_threats.db'
+DATABASE = 'threat_data.db'
+
 
 def get_alerts_from_db():
     conn = sqlite3.connect(DATABASE)

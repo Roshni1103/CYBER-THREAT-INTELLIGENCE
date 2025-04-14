@@ -1,20 +1,4 @@
-import requests
-import sqlite3
-from datetime import datetime, timedelta, timezone
-
-DB_FILE = "cyber_threats.db"
-
-# Use timezone-aware datetime (UTC)
-now = datetime.now(timezone.utc)
-seven_days_ago = (now - timedelta(days=7)).strftime('%Y-%m-%dT%H:%M:%S.000Z')
-now_str = now.strftime('%Y-%m-%dT%H:%M:%S.000Z')
-
-NVD_API_URL = (
-    f"https://services.nvd.nist.gov/rest/json/cves/2.0?"
-    f"resultsPerPage=10&pubStartDate={seven_days_ago}&pubEndDate={now_str}"
-)
-
-def scrape():
+def scrape_cve():
     print("[*] Scraping latest CVEs from NVD API...")
 
     try:
@@ -53,25 +37,26 @@ def scrape():
             print(f"[!] Duplicate skipped: {cve_id}")
             continue
 
+    
+
+
         cursor.execute("""
-            INSERT INTO threats (date, advisory_id, threat_type, severity, description, affected_systems, source, scraped_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            published,
-            cve_id,
-            "CVE",
-            severity,
-            description,
-            affected,
-            source_url,
-            datetime.now().isoformat()
-        ))
+    INSERT INTO threats (source, title, url, date_scraped, advisory_id, threat_type, severity, affected_systems, scraped_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+""", (
+    "NVD API",  # source
+    title,  # title (ensure the title is properly extracted)
+    source_url,  # url (the URL for the CVE)
+    datetime.utcnow().isoformat(),  # date_scraped (current time in UTC)
+    cve_id,  # advisory_id (CVE ID)
+    "CVE",  # threat_type (as 'CVE' in this case)
+    severity,  # severity
+    affected,  # affected_systems (can be detailed based on CVE data)
+    datetime.utcnow().isoformat()  # scraped_at (current time in UTC)
+))
+
 
         print(f"[+] Inserted: {cve_id}")
 
     conn.commit()
     conn.close()
-
-# Optional: allow manual run
-if __name__ == "__main__":
-    scrape()
